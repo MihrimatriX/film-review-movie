@@ -1,0 +1,35 @@
+[
+  {
+    "id": "1",
+    "slug": "oscars-2026-predictions",
+    "title": "Oscars 2026: early predictions",
+    "excerpt": "Which films are already shaping the conversation for next year's awards season.",
+    "body": "The awards conversation starts earlier every cycle. Festival premieres, late-summer breakouts, and streaming campaigns all feed the same narrative machine.\n\nThis year, watch for consensus forming around performances that combine showiness with emotional restraint — the kind of work voters can describe in one sentence. Technical categories may reward films that solve hard problems on screen: visibility in low light, convincing digital crowds, or soundscapes that clarify rather than overwhelm.\n\nNothing is locked in until the guilds weigh in, but the shortlist of conversation starters is already longer than usual.",
+    "cover": "https://images.unsplash.com/photo-1517602302552-471fe67acf66?auto=format&fit=crop&w=1200&q=80",
+    "date": "2026-03-15",
+    "author": "Film Desk",
+    "tags": ["Oscars", "Ödüller", "Trend"]
+  },
+  {
+    "id": "2",
+    "slug": "streaming-vs-theaters",
+    "title": "Streaming vs theaters in 2026",
+    "excerpt": "How release windows keep evolving and what it means for film lovers.",
+    "body": "Exclusive theatrical windows have not snapped back to pre-2020 norms everywhere, but they have stabilized into a handful of patterns studios repeat with confidence.\n\nFor audiences, the trade-off is familiar: theaters still offer scale and focus, while streaming offers convenience and replay. The interesting tension is mid-budget drama — titles that need word of mouth but do not rely on spectacle.\n\nExpect more day-and-date experiments for niche titles and longer exclusivity for event films that monetize premium formats.",
+    "cover": "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1200&q=80",
+    "date": "2026-03-01",
+    "author": "Editorial",
+    "tags": ["Streaming", "Sinema", "Endüstri"]
+  },
+  {
+    "id": "3",
+    "slug": "sound-design-spotlight",
+    "title": "Sound design spotlight",
+    "excerpt": "Why great sound mixes remain the secret weapon of modern blockbusters.",
+    "body": "When picture editing is tight and VFX are polished, sound is often what separates competent blockbusters from memorable ones. LFE hits, dialogue intelligibility, and subtle ambiences all compete for the same speaker real estate.\n\nMixers talk about \"story-first\" prioritization: clarity in chaos, silence as punctuation, and music that knows when to get out of the way.\n\nNext time you rewatch a favorite action sequence, try listening for how effects are staged in depth — not just left and right, but near and far.",
+    "cover": "https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=1200&q=80",
+    "date": "2026-02-20",
+    "author": "Tech Review",
+    "tags": ["Ses", "Teknik", "Blockbuster"]
+  }
+]

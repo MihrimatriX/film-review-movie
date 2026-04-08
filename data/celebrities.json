@@ -1,0 +1,101 @@
+[
+  {
+    "id": "1",
+    "slug": "hugh-jackman",
+    "name": "Hugh Jackman",
+    "role": "Actor",
+    "country": "Australia",
+    "bio": "Hugh Michael Jackman is an Australian actor and producer. He is known for Wolverine in the X-Men films and for stage musicals including The Boy from Oz.",
+    "image": "https://images.unsplash.com/photo-1520975958225-91f4b32d5c78?auto=format&fit=crop&w=900&q=80",
+    "imageGrid2": "https://images.unsplash.com/photo-1520975958225-91f4b32d5c78?auto=format&fit=crop&w=900&q=80",
+    "imageList": "https://images.unsplash.com/photo-1520975958225-91f4b32d5c78?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": "2",
+    "slug": "chris-evans",
+    "name": "Chris Evans",
+    "role": "Actor",
+    "country": "USA",
+    "bio": "Christopher Robert Evans began acting in television before breakthrough roles in Not Another Teen Movie and as Captain America in the MCU.",
+    "image": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80",
+    "imageGrid2": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80",
+    "imageList": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": "3",
+    "slug": "emma-stone",
+    "name": "Emma Stone",
+    "role": "Actress",
+    "country": "USA",
+    "bio": "Emily Jean Stone is an Academy Award-winning actress known for La La Land, Easy A, and Poor Things.",
+    "image": "https://images.unsplash.com/photo-1524503033411-f4f36f5f4b1a?auto=format&fit=crop&w=900&q=80",
+    "imageGrid2": "https://images.unsplash.com/photo-1524503033411-f4f36f5f4b1a?auto=format&fit=crop&w=900&q=80",
+    "imageList": "https://images.unsplash.com/photo-1524503033411-f4f36f5f4b1a?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": "4",
+    "slug": "ryan-gosling",
+    "name": "Ryan Gosling",
+    "role": "Actor",
+    "country": "Canada",
+    "bio": "Ryan Thomas Gosling is a Canadian actor known for Drive, La La Land, and Blade Runner 2049.",
+    "image": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80",
+    "imageGrid2": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80",
+    "imageList": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": "5",
+    "slug": "scarlett-johansson",
+    "name": "Scarlett Johansson",
+    "role": "Actress",
+    "country": "USA",
+    "bio": "Scarlett Ingrid Johansson is one of the world's highest-grossing box office stars, known for Lost in Translation and Black Widow.",
+    "image": "https://images.unsplash.com/photo-1524502397800-2eeaad7c3fe5?auto=format&fit=crop&w=900&q=80",
+    "imageGrid2": "https://images.unsplash.com/photo-1524502397800-2eeaad7c3fe5?auto=format&fit=crop&w=900&q=80",
+    "imageList": "https://images.unsplash.com/photo-1524502397800-2eeaad7c3fe5?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": "6",
+    "slug": "tom-hardy",
+    "name": "Tom Hardy",
+    "role": "Actor",
+    "country": "UK",
+    "bio": "Edward Thomas Hardy is a British actor known for Inception, Mad Max: Fury Road, and Venom.",
+    "image": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80",
+    "imageGrid2": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80",
+    "imageList": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": "7",
+    "slug": "margot-robbie",
+    "name": "Margot Robbie",
+    "role": "Actress",
+    "country": "Australia",
+    "bio": "Margot Elise Robbie is an Australian producer and actress, acclaimed for I, Tonya and Barbie.",
+    "image": "https://images.unsplash.com/photo-1524503033411-f4f36f5f4b1a?auto=format&fit=crop&w=900&q=80",
+    "imageGrid2": "https://images.unsplash.com/photo-1524503033411-f4f36f5f4b1a?auto=format&fit=crop&w=900&q=80",
+    "imageList": "https://images.unsplash.com/photo-1524503033411-f4f36f5f4b1a?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": "8",
+    "slug": "jason-momoa",
+    "name": "Jason Momoa",
+    "role": "Actor",
+    "country": "USA",
+    "bio": "Joseph Jason Namakaeha Momoa is known for Aquaman, Game of Thrones, and Dune.",
+    "image": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80",
+    "imageGrid2": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80",
+    "imageList": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": "9",
+    "slug": "leonardo-dicaprio",
+    "name": "Leonardo DiCaprio",
+    "role": "Actor",
+    "country": "USA",
+    "bio": "Leonardo Wilhelm DiCaprio is an Oscar-winning actor and environmental activist, known for Titanic and The Revenant.",
+    "image": "https://images.unsplash.com/photo-1524502397800-2eeaad7c3fe5?auto=format&fit=crop&w=900&q=80",
+    "imageGrid2": "https://images.unsplash.com/photo-1524502397800-2eeaad7c3fe5?auto=format&fit=crop&w=900&q=80",
+    "imageList": "https://images.unsplash.com/photo-1524502397800-2eeaad7c3fe5?auto=format&fit=crop&w=900&q=80"
+  }
+]

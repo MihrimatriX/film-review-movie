@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="Film Review">
+  <rect width="180" height="180" rx="40" fill="#0c0c12"/>
+  <path fill="#dd003f" d="M34 38h112v28H34z"/>
+  <path fill="#f59e0b" d="M34 66h112v76H34z"/>
+  <path fill="#0c0c12" d="M48 88h20v42H48zm32 0h20v42H80zm32 0h20v42h-20z" opacity="0.85"/>
+</svg>
