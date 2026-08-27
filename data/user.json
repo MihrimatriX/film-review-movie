@@ -1,0 +1,39 @@
+{
+  "profile": {
+    "username": "ayse_demir",
+    "email": "ayse.demir@example.com",
+    "firstName": "Ayşe",
+    "lastName": "Demir",
+    "country": "Türkiye",
+    "state": "İstanbul",
+    "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80"
+  },
+  "favoriteSlugs": [
+    "interstellar",
+    "the-revenant",
+    "die-hard",
+    "the-walk",
+    "blade-runner-2049",
+    "mad-max-fury-road"
+  ],
+  "ratings": [
+    {
+      "movieSlug": "interstellar",
+      "userRating": 9.0,
+      "reviewTitle": "Uzayı ve duyguyu bir arada tutan nadir filmlerden",
+      "reviewDate": "12 Mart 2024",
+      "reviewBody": "Görsel tasarım ve müzik güçlü; hikâye aceleye gelmemiş. Tekrar izlenesi yüksek."
+    },
+    {
+      "movieSlug": "the-revenant",
+      "userRating": 7.0
+    },
+    {
+      "movieSlug": "arrival",
+      "userRating": 10.0,
+      "reviewTitle": "İletişim temalı bilim kurguda zirve",
+      "reviewDate": "3 Şubat 2024",
+      "reviewBody": "Tempo yavaş ama her sahne bilinçli. Bilim kurgu seviyorsanız kaçırmayın."
+    }
+  ]
+}

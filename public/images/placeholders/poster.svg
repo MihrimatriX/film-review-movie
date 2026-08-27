@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" role="img" aria-label="">
+  <defs>
+    <linearGradient id="p" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f2133"/>
+      <stop offset="100%" style="stop-color:#071829"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="600" rx="12" fill="url(#p)"/>
+  <rect x="48" y="200" width="304" height="200" rx="8" fill="#1a3555" opacity="0.6"/>
+  <path d="M175 275 L175 325 L235 300 Z" fill="#2a3f5a"/>
+  <text x="200" y="520" text-anchor="middle" fill="#5c728a" font-family="system-ui,sans-serif" font-size="13" font-weight="600">Poster</text>
+</svg>

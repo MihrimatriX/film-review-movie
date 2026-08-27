@@ -1,0 +1,100 @@
+[
+  {
+    "id": "s1",
+    "slug": "the-big-bang-theory",
+    "title": "The Big Bang Theory",
+    "yearLabel": "2007 - current",
+    "rating": 8.1,
+    "reviewCount": 56,
+    "poster": "https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?auto=format&fit=crop&w=900&q=80",
+    "synopsis": "Leonard Hofstadter and Sheldon Cooper are both brilliant physicists working at Cal Tech in Pasadena, California. They are colleagues, best friends, and roommates, although in all capacities their relationship is always tested primarily by Sheldon's regimented, deeply eccentric, and non-conventional ways.",
+    "runtime": "22 min",
+    "mpaa": "TV-14",
+    "genres": ["Comedy", "Romance"],
+    "director": "Mark Cendrowski",
+    "writers": "Chuck Lorre, Bill Prady",
+    "starsLine": "Johnny Galecki, Jim Parsons, Kaley Cuoco",
+    "releaseDate": "24 Sep 2007 (USA)",
+    "plotKeywords": ["sitcom", "nerds", "science", "friendship"],
+    "seasons": [
+      {
+        "title": "Season 10",
+        "episodes": 21,
+        "description": "Season 10 of The Big Bang Theory premiered on September 19, 2016.",
+        "image": "https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=900&q=80"
+      }
+    ],
+    "cast": [
+      {
+        "name": "Johnny Galecki",
+        "role": "Leonard Hofstadter",
+        "image": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=400&q=80"
+      },
+      {
+        "name": "Jim Parsons",
+        "role": "Sheldon Cooper",
+        "image": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80"
+      },
+      {
+        "name": "Kaley Cuoco",
+        "role": "Penny",
+        "image": "https://images.unsplash.com/photo-1524503033411-f4f36f5f4b1a?auto=format&fit=crop&w=400&q=80"
+      },
+      {
+        "name": "Simon Helberg",
+        "role": "Howard Wolowitz",
+        "image": "https://images.unsplash.com/photo-1520975958225-91f4b32d5c78?auto=format&fit=crop&w=400&q=80"
+      }
+    ],
+    "mediaThumbs": [
+      "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=600&q=80"
+    ],
+    "videoThumb": "https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": "s2",
+    "slug": "breaking-bad",
+    "title": "Breaking Bad",
+    "yearLabel": "2008 - 2013",
+    "rating": 9.5,
+    "reviewCount": 1204,
+    "poster": "https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=900&q=80",
+    "synopsis": "A high school chemistry teacher turned methamphetamine manufacturer partners with a former student in this acclaimed drama.",
+    "runtime": "49 min",
+    "mpaa": "TV-MA",
+    "genres": ["Crime", "Drama", "Thriller"],
+    "director": "Vince Gilligan",
+    "writers": "Vince Gilligan",
+    "starsLine": "Bryan Cranston, Aaron Paul, Anna Gunn",
+    "releaseDate": "20 Jan 2008 (USA)",
+    "plotKeywords": ["crime", "meth", "desert", "family"],
+    "seasons": [
+      {
+        "title": "Season 5",
+        "episodes": 16,
+        "description": "The final chapters of Walter White's transformation.",
+        "image": "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=900&q=80"
+      }
+    ],
+    "cast": [
+      {
+        "name": "Bryan Cranston",
+        "role": "Walter White",
+        "image": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80"
+      },
+      {
+        "name": "Aaron Paul",
+        "role": "Jesse Pinkman",
+        "image": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=400&q=80"
+      }
+    ],
+    "mediaThumbs": [
+      "https://images.unsplash.com/photo-1517602302552-471fe67acf66?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80"
+    ],
+    "videoThumb": "https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=900&q=80"
+  }
+]
