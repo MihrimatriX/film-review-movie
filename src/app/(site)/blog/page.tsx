@@ -12,6 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: s.blog.gridTitle,
     description: s.seo.blogIndexDescription,
     pathname: "/blog",
+    keywords: [...s.seo.keywords, s.nav.blog],
   });
 }
 

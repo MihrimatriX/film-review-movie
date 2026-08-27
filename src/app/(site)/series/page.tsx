@@ -38,6 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: s.nav.series,
     description: s.seo.seriesIndexDescription,
     pathname: "/series",
+    keywords: [...s.seo.keywords, s.nav.series],
   });
 }
 

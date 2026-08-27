@@ -2,7 +2,9 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SuppressContextMenu } from "@/components/SuppressContextMenu";
 import { TmdbSetupBanner } from "@/components/TmdbSetupBanner";
+import { JsonLd } from "@/components/JsonLd";
 import { t, type Locale } from "@/lib/i18n";
+import { siteGraph } from "@/lib/seo/json-ld";
 
 /**
  * Ortak üst/alt çerçeve — `(site)` layout ve kök `not-found` aynı görünümü paylaşsın
@@ -21,6 +23,7 @@ export function SiteChrome({
 
   return (
     <>
+      <JsonLd data={siteGraph(locale)} />
       <SuppressContextMenu />
       <SiteHeader
         locale={locale}

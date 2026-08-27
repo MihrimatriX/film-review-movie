@@ -11,6 +11,8 @@ import {
   clearMovieFiltersHref,
 } from "@/lib/listing-filter-chips";
 import { getLocale, t } from "@/lib/i18n";
+import { buildDetailMetadata } from "@/lib/seo/metadata";
+import type { Metadata } from "next";
 import {
   applyMovieListing,
   parseDiscoverPageParam,
@@ -25,7 +27,16 @@ import { movieSortSelectOptions } from "@/lib/listing-sort-ui";
 import { isTmdbConfigured } from "@/lib/tmdb";
 import { redirect } from "next/navigation";
 
-export const metadata = { title: "Movie grid full width" };
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const s = t(locale);
+  return buildDetailMetadata({
+    title: s.moviesPage.fullWidthTitle,
+    description: s.seo.moviesFullWidthDescription,
+    pathname: "/movies/full-width",
+    keywords: [...s.seo.keywords, s.nav.movies],
+  });
+}
 
 type Sp = Record<string, string | string[] | undefined>;
 

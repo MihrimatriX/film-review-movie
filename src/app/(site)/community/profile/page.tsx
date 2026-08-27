@@ -2,8 +2,19 @@ import { PageHero } from "@/components/PageHero";
 import { UserSidebar } from "@/components/UserSidebar";
 import { readUserData } from "@/lib/data-file";
 import { getLocale, t } from "@/lib/i18n";
+import { buildDetailMetadata } from "@/lib/seo/metadata";
+import type { Metadata } from "next";
 
-export const metadata = { title: "User profile" };
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const s = t(locale);
+  return buildDetailMetadata({
+    title: s.community.profile,
+    description: s.seo.communityProfileDescription,
+    pathname: "/community/profile",
+    noindex: true,
+  });
+}
 
 export default async function CommunityProfilePage() {
   const { profile } = await readUserData();

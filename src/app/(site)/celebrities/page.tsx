@@ -33,6 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: s.celebritiesPage.gridTitle,
     description: s.seo.celebritiesIndexDescription,
     pathname: "/celebrities",
+    keywords: [...s.seo.keywords, s.nav.celebrities],
   });
 }
 

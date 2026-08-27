@@ -1,6 +1,7 @@
 import { MotionEffectsGate } from "@/components/motion/MotionEffectsGate";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { getLocale } from "@/lib/i18n";
+import { getLocale, t } from "@/lib/i18n";
+import { htmlLang, ogLocale } from "@/lib/seo/helpers";
 import { getMetadataBase } from "@/lib/site-url";
 import type { Metadata, Viewport } from "next";
 import { Dosis, Nunito } from "next/font/google";
@@ -18,68 +19,80 @@ const nunito = Nunito({
   weight: ["300", "400", "600"],
 });
 
-export const metadata: Metadata = {
-  metadataBase: getMetadataBase(),
-  applicationName: "Film Review",
-  title: {
-    default: "Film Review — Movie Database",
-    template: "%s | Film Review",
-  },
-  description:
-    "Movie and TV database with reviews, cast, TMDB discovery, and blog — Next.js portfolio demo.",
-  keywords: [
-    "movies",
-    "TV series",
-    "film reviews",
-    "TMDB",
-    "cinema",
-    "dizi",
-    "film",
-    "actors",
-  ],
-  authors: [{ name: "Film Review", url: "/" }],
-  creator: "Film Review",
-  publisher: "Film Review",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
-  openGraph: {
-    type: "website",
-    siteName: "Film Review",
-    locale: "en_US",
-    alternateLocale: ["tr_TR"],
-    title: "Film Review — Movie Database",
-    description:
-      "Movie and TV database with synopses, cast, TMDB-powered lists, and community features.",
-    images: [
-      {
-        url: "/images/placeholders/cover.svg",
-        width: 1200,
-        height: 630,
-        alt: "Film Review",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Film Review — Movie Database",
-    description:
-      "Movie and TV database with synopses, cast, TMDB-powered lists, and community features.",
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const s = t(locale);
+  const loc = ogLocale(locale);
+  const alternate = loc === "tr_TR" ? "en_US" : "tr_TR";
+
+  return {
+    metadataBase: getMetadataBase(),
+    applicationName: s.seo.siteName,
+    title: {
+      default: s.seo.homeDocumentTitle,
+      template: `%s | ${s.seo.siteName}`,
+    },
+    description: s.seo.defaultDescription,
+    keywords: [...s.seo.keywords],
+    authors: [{ name: s.seo.siteName, url: "/" }],
+    creator: s.seo.siteName,
+    publisher: s.seo.siteName,
+    category: "entertainment",
+    formatDetection: {
+      email: false,
+      address: false,
+      telephone: false,
+    },
+    alternates: {
+      canonical: "/",
+    },
+    appleWebApp: {
+      capable: true,
+      title: s.seo.siteName,
+      statusBarStyle: "black-translucent",
+    },
+    openGraph: {
+      type: "website",
+      siteName: s.seo.siteName,
+      locale: loc,
+      alternateLocale: [alternate],
+      title: s.seo.homeDocumentTitle,
+      description: s.seo.defaultDescription,
+      images: [
+        {
+          url: "/opengraph-image",
+          width: 1200,
+          height: 630,
+          alt: s.seo.ogImageAlt,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: s.seo.homeDocumentTitle,
+      description: s.seo.defaultDescription,
+      images: [
+        {
+          url: "/twitter-image",
+          width: 1200,
+          height: 630,
+          alt: s.seo.ogImageAlt,
+        },
+      ],
+    },
+    robots: {
       index: true,
       follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
     },
-  },
-};
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -98,7 +111,7 @@ export default async function RootLayout({
   const locale = await getLocale();
   return (
     <html
-      lang={locale}
+      lang={htmlLang(locale)}
       className={`${dosis.variable} ${nunito.variable} h-full antialiased`}
       suppressHydrationWarning
     >

@@ -77,16 +77,44 @@ const DICT = {
       defaultDescription:
         "Film ve dizi veritabanı, özetler, kadro ve TMDB ile zenginleştirilmiş keşif; inceleme ve blog içerikleri.",
       homeTitle: "Ana sayfa",
+      homeDocumentTitle: "Film Review — Film ve dizi veritabanı",
       homeDescription:
         "Vizyondakiler, TMDB film kataloğu, haberler ve topluluk — film ve dizileri keşfedin.",
       moviesIndexDescription:
         "Filmleri tür, yıl ve puana göre süzün; TMDB ve yerel kayıtlar bir arada.",
+      moviesListDescription:
+        "Filmleri liste görünümünde keşfedin; tür, yıl, puan ve kadroya göre süzün.",
+      moviesFullWidthDescription:
+        "Film ızgarasını tam genişlikte görün; TMDB keşfi ve yerel kayıtlar.",
       seriesIndexDescription:
         "Dizileri keşfedin; özet, kadro ve detay sayfalarına gidin.",
       celebritiesIndexDescription:
         "Oyuncu ve ekip profilleri, biyografi ve filmografi.",
+      celebritiesListDescription:
+        "Oyuncu ve ekip listesi; ülke, yaş ve kategoriye göre süzün.",
+      celebritiesGrid2Description:
+        "Oyuncu ve ekip ızgarası — büyük portrelerle keşif.",
       blogIndexDescription:
         "Film ve dizi üzerine yazılar, haberler ve listeler.",
+      blogListDescription:
+        "Blog yazılarını liste görünümünde okuyun; başlık, özet veya etikete göre arayın.",
+      communityProfileDescription:
+        "Demo kullanıcı profili ve hesap bilgileri.",
+      communityFavoritesDescription:
+        "Demo hesaba kaydedilmiş favori filmler.",
+      communityRatedDescription:
+        "Demo hesaba kaydedilmiş puanlar ve kısa notlar.",
+      ogImageAlt: "Film Review — film ve dizi veritabanı",
+      keywords: [
+        "film",
+        "dizi",
+        "sinema",
+        "film inceleme",
+        "oyuncular",
+        "TMDB",
+        "vizyon",
+        "blog",
+      ],
     },
     hero: {
       followUs: "Bizi takip edin:",
@@ -163,6 +191,7 @@ const DICT = {
     moviesPage: {
       gridTitle: "Filmler",
       listTitle: "Filmler — liste",
+      fullWidthTitle: "Filmler — tam genişlik",
       crumb: "Filmler",
     },
     tmdbDetail: {
@@ -432,16 +461,44 @@ const DICT = {
       defaultDescription:
         "Movie and TV database with synopses, cast, and TMDB-powered discovery, reviews, and blog.",
       homeTitle: "Home",
+      homeDocumentTitle: "Film Review — Movie & TV Database",
       homeDescription:
         "In theaters, TMDB movie catalog, news and community — discover films and series.",
       moviesIndexDescription:
         "Browse movies by genre, year, and rating; TMDB and local data combined.",
+      moviesListDescription:
+        "Browse movies in list view; filter by genre, year, rating, and cast.",
+      moviesFullWidthDescription:
+        "Full-width movie grid with TMDB discovery and local titles.",
       seriesIndexDescription:
         "Explore TV series; open detail pages for cast and synopsis.",
       celebritiesIndexDescription:
         "Cast and crew profiles with bios and credits.",
+      celebritiesListDescription:
+        "Cast and crew list; filter by country, age, and category.",
+      celebritiesGrid2Description:
+        "Cast and crew grid with large portraits.",
       blogIndexDescription:
         "Articles, news, and lists about film and television.",
+      blogListDescription:
+        "Read blog posts in list view; search by title, excerpt, or tags.",
+      communityProfileDescription:
+        "Demo user profile and account details.",
+      communityFavoritesDescription:
+        "Favorite movies saved on the demo account.",
+      communityRatedDescription:
+        "Ratings and short notes saved on the demo account.",
+      ogImageAlt: "Film Review — movie and TV database",
+      keywords: [
+        "movies",
+        "TV series",
+        "film reviews",
+        "cinema",
+        "actors",
+        "TMDB",
+        "now playing",
+        "blog",
+      ],
     },
     hero: {
       followUs: "Follow us:",
@@ -518,6 +575,7 @@ const DICT = {
     moviesPage: {
       gridTitle: "Movies",
       listTitle: "Movies — list",
+      fullWidthTitle: "Movies — full width",
       crumb: "Movies",
     },
     tmdbDetail: {

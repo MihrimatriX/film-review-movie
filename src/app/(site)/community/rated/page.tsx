@@ -5,10 +5,21 @@ import { UserSidebar } from "@/components/UserSidebar";
 import { getMoviesMerged } from "@/lib/catalog";
 import { readUserData } from "@/lib/data-file";
 import { formatNameHeading, getLocale, t } from "@/lib/i18n";
+import { buildDetailMetadata } from "@/lib/seo/metadata";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-export const metadata = { title: "Rated movies" };
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const s = t(locale);
+  return buildDetailMetadata({
+    title: s.community.ratedTitle,
+    description: s.seo.communityRatedDescription,
+    pathname: "/community/rated",
+    noindex: true,
+  });
+}
 
 export default async function CommunityRatedPage() {
   const locale = await getLocale();

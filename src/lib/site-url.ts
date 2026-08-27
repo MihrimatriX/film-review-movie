@@ -20,3 +20,7 @@ export function getMetadataBase(): URL {
 export function siteOrigin(): string {
   return getMetadataBase().origin;
 }
+
+export function siteUrl(pathname = "/"): string {
+  return new URL(pathname, getMetadataBase()).toString();
+}

@@ -18,9 +18,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
   const s = t(locale);
   return buildDetailMetadata({
-    title: s.seo.homeTitle,
+    title: s.seo.homeDocumentTitle,
     description: s.seo.homeDescription,
     pathname: "/",
+    absoluteTitle: true,
+    keywords: [...s.seo.keywords],
   });
 }
 

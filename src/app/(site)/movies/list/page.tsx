@@ -39,8 +39,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const s = t(locale);
   return buildDetailMetadata({
     title: s.moviesPage.listTitle,
-    description: s.seo.moviesIndexDescription,
+    description: s.seo.moviesListDescription,
     pathname: "/movies/list",
+    keywords: [...s.seo.keywords, s.nav.movies],
   });
 }
 

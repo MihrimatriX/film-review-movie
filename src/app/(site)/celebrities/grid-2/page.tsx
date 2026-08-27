@@ -30,8 +30,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const s = t(locale);
   return buildDetailMetadata({
     title: s.celebritiesPage.gridTitleAlt,
-    description: s.seo.celebritiesIndexDescription,
+    description: s.seo.celebritiesGrid2Description,
     pathname: "/celebrities/grid-2",
+    keywords: [...s.seo.keywords, s.nav.celebrities],
   });
 }
 

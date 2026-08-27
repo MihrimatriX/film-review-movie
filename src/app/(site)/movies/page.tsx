@@ -34,6 +34,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: s.moviesPage.gridTitle,
     description: s.seo.moviesIndexDescription,
     pathname: "/movies",
+    keywords: [...s.seo.keywords, s.nav.movies],
   });
 }
 

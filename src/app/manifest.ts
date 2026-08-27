@@ -8,8 +8,11 @@ export default function manifest(): MetadataRoute.Manifest {
       "Film and TV database with reviews, cast, and TMDB-powered discovery.",
     start_url: "/",
     display: "standalone",
-    background_color: "#0c0c12",
-    theme_color: "#0c0c12",
+    background_color: "#020d18",
+    theme_color: "#020d18",
+    lang: "tr",
+    dir: "ltr",
+    categories: ["entertainment", "movies"],
     icons: [
       {
         src: "/icon.svg",

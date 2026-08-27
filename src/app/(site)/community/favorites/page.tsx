@@ -14,8 +14,19 @@ import {
   withMovieListingQuery,
 } from "@/lib/listing-sort";
 import { movieSortSelectOptions } from "@/lib/listing-sort-ui";
+import { buildDetailMetadata } from "@/lib/seo/metadata";
+import type { Metadata } from "next";
 
-export const metadata = { title: "Favorite movies (grid)" };
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const s = t(locale);
+  return buildDetailMetadata({
+    title: s.footer.linkFavorites,
+    description: s.seo.communityFavoritesDescription,
+    pathname: "/community/favorites",
+    noindex: true,
+  });
+}
 
 type Sp = Record<string, string | string[] | undefined>;
 

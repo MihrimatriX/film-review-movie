@@ -1,8 +1,15 @@
 import { CelebrityPortraitImage } from "@/components/CelebrityPortraitImage";
+import { JsonLd } from "@/components/JsonLd";
 import { PageHero } from "@/components/PageHero";
 import { pickCelebrityImageSrc } from "@/lib/celebrity-image";
 import { getCelebrityBySlugMerged } from "@/lib/catalog";
 import { getLocale, t } from "@/lib/i18n";
+import { notFoundMetadata, splitPersonName } from "@/lib/seo/helpers";
+import {
+  breadcrumbNode,
+  personNode,
+  webPageNode,
+} from "@/lib/seo/json-ld";
 import { buildDetailMetadata } from "@/lib/seo/metadata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -13,17 +20,24 @@ export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
   const locale = await getLocale();
   const c = await getCelebrityBySlugMerged(locale, slug);
-  if (!c)
-    return { title: "Not found", robots: { index: false, follow: false } };
+  if (!c) return notFoundMetadata(locale);
   const desc =
     c.bio?.slice(0, 400) ||
     [c.role, c.country].filter(Boolean).join(" · ") ||
     c.name;
+  const names = splitPersonName(c.name);
   return buildDetailMetadata({
+    locale,
     title: c.name,
     description: desc,
     pathname: `/celebrities/${slug}`,
     image: c.imageGrid2 ?? c.image ?? null,
+    imageAlt: c.name,
+    type: "profile",
+    firstName: names.firstName,
+    lastName: names.lastName,
+    gender: c.gender === 1 ? "female" : c.gender === 2 ? "male" : undefined,
+    keywords: [c.role, c.country].filter((v): v is string => Boolean(v)),
   });
 }
 
@@ -40,6 +54,23 @@ export default async function CelebritySinglePage({ params }: Props) {
 
   return (
     <>
+      <JsonLd
+        data={[
+          webPageNode({
+            pathname: `/celebrities/${slug}`,
+            title: c.name,
+            description: c.bio,
+            locale,
+            image: c.imageGrid2 ?? c.image,
+          }),
+          breadcrumbNode([
+            { name: crumbHome, pathname: "/" },
+            { name: crumbCelebs, pathname: "/celebrities" },
+            { name: c.name },
+          ]),
+          personNode(c, `/celebrities/${slug}`),
+        ]}
+      />
       <PageHero
         title={c.name}
         crumbs={[

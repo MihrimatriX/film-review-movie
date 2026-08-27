@@ -1,4 +1,5 @@
 import { BlogArticleActions } from "@/components/blog/BlogArticleActions";
+import { JsonLd } from "@/components/JsonLd";
 import { PageHero } from "@/components/PageHero";
 import { readPosts } from "@/lib/data-file";
 import {
@@ -10,6 +11,12 @@ import {
   sortPostsByDateDesc,
 } from "@/lib/blog-utils";
 import { getLocale, t } from "@/lib/i18n";
+import { notFoundMetadata } from "@/lib/seo/helpers";
+import {
+  articleNode,
+  breadcrumbNode,
+  webPageNode,
+} from "@/lib/seo/json-ld";
 import { buildDetailMetadata } from "@/lib/seo/metadata";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,21 +26,27 @@ type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
+  const locale = await getLocale();
   const posts = await readPosts();
   const post = posts.find((p) => p.slug === slug);
-  if (!post)
-    return { title: "Not found", robots: { index: false, follow: false } };
+  if (!post) return notFoundMetadata(locale);
   const published =
     post.date && !Number.isNaN(Date.parse(post.date))
       ? new Date(post.date).toISOString()
       : undefined;
   return buildDetailMetadata({
+    locale,
     title: post.title,
     description: post.excerpt,
     pathname: `/blog/${slug}`,
     image: post.cover || null,
+    imageAlt: post.title,
     type: "article",
     publishedTime: published,
+    authors: [post.author],
+    tags: post.tags,
+    section: "Blog",
+    keywords: post.tags,
   });
 }
 
@@ -52,6 +65,23 @@ export default async function BlogDetailPage({ params }: Props) {
 
   return (
     <>
+      <JsonLd
+        data={[
+          webPageNode({
+            pathname: `/blog/${slug}`,
+            title: post.title,
+            description: post.excerpt,
+            locale,
+            image: post.cover,
+          }),
+          breadcrumbNode([
+            { name: s.crumbs.home, pathname: "/" },
+            { name: s.nav.blog, pathname: "/blog" },
+            { name: post.title },
+          ]),
+          articleNode(post, `/blog/${slug}`, minutes),
+        ]}
+      />
       <PageHero
         title={post.title}
         crumbs={[
@@ -98,7 +128,7 @@ export default async function BlogDetailPage({ params }: Props) {
         <div className="relative mt-8 aspect-video overflow-hidden rounded-xl border border-[var(--cv-border)] shadow-lg">
           <Image
             src={post.cover}
-            alt=""
+            alt={post.title}
             fill
             className="object-cover"
             priority
@@ -194,7 +224,7 @@ export default async function BlogDetailPage({ params }: Props) {
                     <div className="relative aspect-[16/10]">
                       <Image
                         src={r.cover}
-                        alt=""
+                        alt={r.title}
                         fill
                         className="object-cover transition group-hover:scale-105"
                         sizes="(max-width:640px) 100vw, 33vw"

@@ -32,8 +32,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const s = t(locale);
   return buildDetailMetadata({
     title: s.celebritiesPage.listTitle,
-    description: s.seo.celebritiesIndexDescription,
+    description: s.seo.celebritiesListDescription,
     pathname: "/celebrities/list",
+    keywords: [...s.seo.keywords, s.nav.celebrities],
   });
 }
 

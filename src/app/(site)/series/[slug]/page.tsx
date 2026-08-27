@@ -1,9 +1,16 @@
+import { JsonLd } from "@/components/JsonLd";
 import { PageHero } from "@/components/PageHero";
 import { SeriesCastMemberCard } from "@/components/SeriesCastMemberCard";
 import { SeriesRelatedCard } from "@/components/SeriesRelatedCard";
 import { SeriesTmdbDetailSection } from "@/components/tmdb/SeriesTmdbDetailSection";
 import { getSeriesMerged, getSeriesPageBundle } from "@/lib/catalog";
 import { getLocale, t } from "@/lib/i18n";
+import { notFoundMetadata, parseRuntimeToSeconds, splitCommaList, toIsoDate } from "@/lib/seo/helpers";
+import {
+  breadcrumbNode,
+  seriesNode,
+  webPageNode,
+} from "@/lib/seo/json-ld";
 import { buildDetailMetadata } from "@/lib/seo/metadata";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,14 +22,36 @@ export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
   const locale = await getLocale();
   const bundle = await getSeriesPageBundle(locale, slug);
-  if (!bundle)
-    return { title: "Not found", robots: { index: false, follow: false } };
-  const { series } = bundle;
+  if (!bundle) return notFoundMetadata(locale);
+  const { series, tmdb } = bundle;
   return buildDetailMetadata({
+    locale,
     title: series.title,
-    description: series.synopsis,
+    description: series.synopsis || tmdb?.tagline,
     pathname: `/series/${slug}`,
-    image: series.poster || null,
+    image: tmdb?.backdropUrl || series.poster || null,
+    imageAlt: series.title,
+    type: "video.tv_show",
+    directors: series.director ? [series.director] : undefined,
+    writers: series.writers ? splitCommaList(series.writers) : undefined,
+    actors: tmdb?.cast?.slice(0, 8).map((c) => ({
+      profile: `/celebrities/${c.slug}`,
+      role: c.character,
+    })),
+    duration: parseRuntimeToSeconds(series.runtime),
+    releaseDate: toIsoDate(series.releaseDate, series.yearLabel),
+    tags: series.genres,
+    keywords: [...series.genres, ...(tmdb?.keywords ?? [])],
+    videos: tmdb?.trailerYoutubeKey
+      ? [
+          {
+            url: `https://www.youtube.com/embed/${tmdb.trailerYoutubeKey}`,
+            width: 1280,
+            height: 720,
+            type: "text/html",
+          },
+        ]
+      : undefined,
   });
 }
 
@@ -59,6 +88,34 @@ export default async function SeriesSinglePage({ params }: Props) {
 
   return (
     <>
+      <JsonLd
+        data={[
+          webPageNode({
+            pathname: `/series/${slug}`,
+            title: s.title,
+            description: s.synopsis,
+            locale,
+            image: tmdb?.backdropUrl || s.poster,
+          }),
+          breadcrumbNode([
+            { name: isEn ? "Home" : "Ana sayfa", pathname: "/" },
+            { name: isEn ? "Series" : "Diziler", pathname: "/series" },
+            { name: s.title },
+          ]),
+          seriesNode(s, {
+            pathname: `/series/${slug}`,
+            backdropUrl: tmdb?.backdropUrl,
+            voteCount: tmdb?.voteCount,
+            trailerKey: tmdb?.trailerYoutubeKey,
+            trailerName: tmdb?.trailerName,
+            imdbUrl: tmdb?.imdbUrl,
+            numberOfSeasons: tmdb?.numberOfSeasons,
+            numberOfEpisodes: tmdb?.numberOfEpisodes,
+            creators: tmdb?.creators?.map((c) => c.name),
+            keywords: tmdb?.keywords,
+          }),
+        ]}
+      />
       <PageHero
         title={s.title}
         crumbs={[

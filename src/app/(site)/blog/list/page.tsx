@@ -11,8 +11,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const s = t(locale);
   return buildDetailMetadata({
     title: s.blog.listTitle,
-    description: s.seo.blogIndexDescription,
+    description: s.seo.blogListDescription,
     pathname: "/blog/list",
+    keywords: [...s.seo.keywords, s.nav.blog],
   });
 }
 
