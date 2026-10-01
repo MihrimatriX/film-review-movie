@@ -2,6 +2,8 @@
 
 import { BrandLogo } from "@/components/BrandLogo";
 import { HeaderSearch } from "@/components/HeaderSearch";
+import { HeaderLibraryLink } from "@/components/library/HeaderLibraryLink";
+import { SurpriseMe } from "@/components/surprise/SurpriseMe";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import type { Locale } from "@/lib/i18n";
@@ -79,6 +81,7 @@ export function SiteHeader({
   const [open, setOpen] = useState(false);
   const pathname = usePathname() ?? "";
   const adminActive = pathname.startsWith("/admin");
+  const libraryActive = pathname.startsWith("/watchlist");
 
   const mainLinks = useMemo(
     () => [
@@ -136,6 +139,8 @@ export function SiteHeader({
                 );
               })}
             </nav>
+            <SurpriseMe />
+            <HeaderLibraryLink active={libraryActive} />
             <LanguageToggle />
             <ThemeToggle />
             <Link
@@ -151,16 +156,27 @@ export function SiteHeader({
             </Link>
           </div>
 
-          <button
-            type="button"
-            className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded border border-[var(--cv-border)] lg:hidden"
-            aria-label={menuAria}
-            onClick={() => setOpen((o) => !o)}
-          >
-            <span className="h-0.5 w-5 bg-[var(--cv-amber-btn)]" />
-            <span className="h-0.5 w-5 bg-[var(--cv-amber-btn)]" />
-            <span className="h-0.5 w-5 bg-[var(--cv-amber-btn)]" />
-          </button>
+          <div className="flex items-center gap-2 lg:hidden">
+            <SurpriseMe />
+            <HeaderLibraryLink active={libraryActive} />
+            <button
+              type="button"
+              className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded border border-[var(--cv-border)]"
+              aria-label={menuAria}
+              aria-expanded={open}
+              onClick={() => setOpen((o) => !o)}
+            >
+              <span
+                className={`h-0.5 w-5 bg-[var(--cv-amber-btn)] transition-transform duration-300 ${open ? "translate-y-2 rotate-45" : ""}`}
+              />
+              <span
+                className={`h-0.5 w-5 bg-[var(--cv-amber-btn)] transition-opacity duration-200 ${open ? "opacity-0" : ""}`}
+              />
+              <span
+                className={`h-0.5 w-5 bg-[var(--cv-amber-btn)] transition-transform duration-300 ${open ? "-translate-y-2 -rotate-45" : ""}`}
+              />
+            </button>
+          </div>
         </div>
 
         <div className="hidden border-t border-[var(--cv-border)] py-3 lg:block">

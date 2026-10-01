@@ -3,6 +3,9 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SuppressContextMenu } from "@/components/SuppressContextMenu";
 import { TmdbSetupBanner } from "@/components/TmdbSetupBanner";
 import { JsonLd } from "@/components/JsonLd";
+import { ScrollChrome } from "@/components/ui/ScrollChrome";
+import { Toaster } from "@/components/ui/Toaster";
+import { UiProvider } from "@/components/ui/UiProvider";
 import { t, type Locale } from "@/lib/i18n";
 import { siteGraph } from "@/lib/seo/json-ld";
 
@@ -22,8 +25,9 @@ export function SiteChrome({
   const s = t(locale);
 
   return (
-    <>
+    <UiProvider locale={locale} ui={s.ui}>
       <JsonLd data={siteGraph(locale)} />
+      <ScrollChrome />
       <SuppressContextMenu />
       <SiteHeader
         locale={locale}
@@ -79,6 +83,7 @@ export function SiteChrome({
       <TmdbSetupBanner locale={locale} />
       <div className="flex min-h-0 flex-1 flex-col">{children}</div>
       <SiteFooter locale={locale} />
-    </>
+      <Toaster />
+    </UiProvider>
   );
 }

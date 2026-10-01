@@ -109,3 +109,14 @@ export type UserData = {
   favoriteSlugs: string[];
   ratings: UserRatingEntry[];
 };
+
+/** “Bana sürpriz yap” ruleti için hafif film özeti. */
+export type SurprisePick = {
+  slug: string;
+  title: string;
+  poster: string;
+  year: number;
+  rating: number;
+  genres: string[];
+  synopsis: string;
+};

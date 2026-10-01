@@ -245,53 +245,6 @@ html {
   }
 }
 
-/* —— Movie card: hover gleam (CSS; GSAP handles lift/tilt) —— */
-@keyframes movie-card-gleam {
-  0% {
-    transform: translateX(-115%) skewX(-16deg);
-    opacity: 0;
-  }
-  12% {
-    opacity: 0.22;
-  }
-  100% {
-    transform: translateX(215%) skewX(-16deg);
-    opacity: 0;
-  }
-}
-
-.movie-card-shell {
-  perspective: 980px;
-}
-
-.movie-card-gleam {
-  position: absolute;
-  background: linear-gradient(
-    105deg,
-    transparent 0%,
-    color-mix(in srgb, var(--cv-heading) 18%, transparent) 45%,
-    color-mix(in srgb, var(--cv-accent) 35%, transparent) 50%,
-    color-mix(in srgb, var(--cv-heading) 18%, transparent) 55%,
-    transparent 100%
-  );
-  width: 55%;
-  height: 180%;
-  top: -40%;
-  left: 0;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.group:hover .movie-card-gleam {
-  animation: movie-card-gleam 0.85s ease-out forwards;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .group:hover .movie-card-gleam {
-    animation: none;
-  }
-}
-
 /* —— Poster cards: folded corner + “detail” hint (hover / focus-within) —— */
 .movie-card-dog-ear {
   position: absolute;
@@ -388,5 +341,586 @@ html {
   .movie-card-shell.group:hover .movie-card-dog-ear-flap,
   .movie-card-shell.group:focus-within .movie-card-dog-ear-flap {
     transform: rotate(-2deg) translate(0, 0) scale(1);
+  }
+}
+
+/* ————————————————————————————————————————————————————————————————
+   3D poster kartı (PosterCard3D): eğim + yansıma + holografik folyo + çevirme
+   Değişkenler JS ile güncellenir: --rx/--ry (derece, birimsiz), --mx/--my (%), --hyp (0..1)
+   ———————————————————————————————————————————————————————————————— */
+.card3d {
+  --rx: 0;
+  --ry: 0;
+  --mx: 50%;
+  --my: 50%;
+  --hyp: 0;
+  --flip: 0deg;
+  --lift: 0px;
+  --card-accent: var(--cv-red);
+  position: relative;
+  perspective: 1100px;
+  isolation: isolate;
+}
+
+.card3d--series {
+  --card-accent: #0d9488;
+}
+
+.card3d[data-flipped="true"] {
+  --flip: 180deg;
+}
+
+.card3d-body {
+  position: relative;
+  transform-style: preserve-3d;
+  transform: translateY(var(--lift)) rotateX(calc(var(--rx) * 1deg))
+    rotateY(calc(var(--ry) * 1deg + var(--flip)));
+  transition: transform 0.75s cubic-bezier(0.3, 1.35, 0.45, 1);
+  will-change: transform;
+}
+
+.card3d[data-active="true"] .card3d-body {
+  transition: transform 0.12s ease-out;
+}
+
+@media (hover: hover) {
+  .card3d:hover {
+    --lift: -8px;
+  }
+}
+
+.card3d-face {
+  border-radius: 0.85rem;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.card3d-front {
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.card3d-front > * {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.card3d-front-link {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 0.85rem;
+  background: var(--cv-card);
+  box-shadow: inset 0 0 0 1px var(--cv-border);
+  outline: none;
+  perspective: none;
+  transition: box-shadow 0.4s ease;
+}
+
+.card3d-front-link::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 12;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--card-accent),
+    var(--cv-accent),
+    transparent
+  );
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.card3d:hover .card3d-front-link,
+.card3d-front-link:focus-visible {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--cv-accent) 40%, var(--cv-border)),
+    0 0 0 1px color-mix(in srgb, var(--cv-accent) 18%, transparent);
+}
+
+.card3d-front-link:focus-visible {
+  box-shadow: 0 0 0 2px var(--cv-accent);
+}
+
+.card3d-poster {
+  position: relative;
+  aspect-ratio: 185 / 284;
+  overflow: hidden;
+  background: var(--cv-deep);
+}
+
+.card3d-poster-img {
+  transform: scale(1.02);
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (hover: hover) {
+  .card3d:hover .card3d-poster-img {
+    transform: scale(1.1)
+      translate(calc(var(--ry) * -0.35px), calc(var(--rx) * 0.35px));
+  }
+}
+
+.card3d-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.45) 0%,
+    transparent 28%,
+    transparent 62%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+  pointer-events: none;
+}
+
+/* İmleci takip eden ışık */
+.card3d-glare {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  background: radial-gradient(
+    farthest-corner circle at var(--mx) var(--my),
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.14) 22%,
+    rgba(0, 0, 0, 0.35) 90%
+  );
+  mix-blend-mode: overlay;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.card3d[data-active="true"] .card3d-glare {
+  opacity: calc(0.45 + var(--hyp) * 0.45);
+}
+
+/* Holografik folyo (yüksek puan) */
+.card3d-holo {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      115deg,
+      hsl(2 90% 62%) 0%,
+      hsl(53 95% 60%) 6%,
+      hsl(140 85% 60%) 12%,
+      hsl(195 95% 62%) 18%,
+      hsl(265 90% 68%) 24%,
+      hsl(330 90% 65%) 30%
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.18) 0 2px,
+      transparent 2px 6px
+    );
+  background-size:
+    320% 320%,
+    100% 100%;
+  background-position:
+    var(--mx) var(--my),
+    0 0;
+  background-blend-mode: overlay;
+  mix-blend-mode: color-dodge;
+  opacity: 0.08;
+  filter: saturate(1.2) contrast(1.1);
+  transition: opacity 0.4s ease;
+}
+
+.card3d[data-active="true"] .card3d-holo {
+  opacity: calc(0.14 + var(--hyp) * 0.22);
+}
+
+.card3d-caption {
+  position: relative;
+  padding: 0.75rem;
+  border-top: 1px solid var(--cv-border);
+  background: linear-gradient(
+    180deg,
+    var(--cv-card),
+    color-mix(in srgb, var(--cv-card) 86%, var(--cv-deep))
+  );
+}
+
+/* Derinlikte yüzen katmanlar */
+.card3d-poster-overlay {
+  position: absolute;
+  inset: 0 0 auto 0;
+  aspect-ratio: 185 / 284;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+.card3d-float {
+  position: absolute;
+  z-index: 20;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  transition: transform 0.5s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+@media (hover: hover) {
+  .card3d:hover .card3d-badges {
+    transform: translateZ(42px);
+  }
+  .card3d:hover .card3d-actions {
+    transform: translateZ(56px);
+  }
+}
+
+.card3d-badges {
+  top: 0.65rem;
+  left: 0.65rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  pointer-events: none;
+}
+
+.card3d-chip {
+  border-radius: 0.4rem;
+  background: rgba(0, 0, 0, 0.58);
+  padding: 0.15rem 0.5rem;
+  font-family: var(--font-dosis), ui-sans-serif, system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.95);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(6px);
+}
+
+.card3d-chip--rare {
+  color: #1a1300;
+  background: linear-gradient(
+    110deg,
+    #fde68a,
+    #f9a8d4 30%,
+    #a5f3fc 60%,
+    #fde68a
+  );
+  background-size: 220% 100%;
+  animation: card3d-rare-shine 3.2s linear infinite;
+  box-shadow: 0 0 16px -2px rgba(253, 230, 138, 0.65);
+}
+
+@keyframes card3d-rare-shine {
+  to {
+    background-position: -220% 0;
+  }
+}
+
+.card3d-actions {
+  /* Kıvrık köşe (dog-ear) sağ üstte; aksiyonlar posterin sağ altında */
+  right: 0.6rem;
+  bottom: 0.6rem;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.card3d-flip-btn {
+  display: grid;
+  place-items: center;
+  height: 2.25rem;
+  width: 2.25rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  backdrop-filter: blur(8px);
+  transition:
+    transform 0.3s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.card3d-flip-btn:hover {
+  transform: rotate(180deg) scale(1.1);
+  border-color: var(--cv-accent);
+  color: var(--cv-accent);
+}
+
+.card3d-flip-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--cv-accent);
+}
+
+/* Fareli cihazlarda aksiyonlar hover’da belirir; dokunmatikte hep görünür. */
+@media (hover: hover) and (pointer: fine) {
+  .card3d-actions {
+    opacity: 0;
+    translate: 6px 0;
+    transition:
+      opacity 0.3s ease,
+      translate 0.3s ease,
+      transform 0.5s cubic-bezier(0.3, 1.4, 0.5, 1);
+  }
+  .card3d:hover .card3d-actions,
+  .card3d:focus-within .card3d-actions,
+  .card3d-actions:has([aria-pressed="true"]) {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* Arka yüz */
+.card3d-back {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  transform: rotateY(180deg);
+  background: var(--cv-deep);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--cv-accent) 35%, var(--cv-border)),
+    0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+.card3d-back-bg {
+  position: absolute;
+  inset: -12%;
+  filter: blur(18px) saturate(1.4) brightness(0.45);
+  transform: scale(1.1);
+}
+
+.card3d-back::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      120% 70% at 50% 0%,
+      color-mix(in srgb, var(--card-accent) 30%, transparent),
+      transparent 60%
+    ),
+    linear-gradient(180deg, rgba(2, 13, 24, 0.35), rgba(2, 13, 24, 0.92));
+  pointer-events: none;
+}
+
+.card3d-back-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  padding: 0.85rem;
+}
+
+/* Zemindeki gölge: kart eğildikçe ters yöne kayar */
+.card3d-shadow {
+  position: absolute;
+  inset: 10% 8% -4% 8%;
+  z-index: -1;
+  border-radius: 1rem;
+  background: radial-gradient(
+    closest-side,
+    rgba(0, 0, 0, 0.55),
+    transparent
+  );
+  filter: blur(14px);
+  opacity: 0;
+  transform: translate(
+      calc(var(--ry) * -0.9px),
+      calc(var(--rx) * 0.9px + 14px)
+    )
+    scale(0.92);
+  transition:
+    opacity 0.4s ease,
+    transform 0.2s ease-out;
+  pointer-events: none;
+}
+
+.card3d:hover .card3d-shadow {
+  opacity: 1;
+}
+
+html.light .card3d-shadow {
+  background: radial-gradient(closest-side, rgba(15, 23, 42, 0.32), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card3d-body,
+  .card3d-float,
+  .card3d-poster-img {
+    transition-duration: 0.01ms !important;
+  }
+  .card3d-chip--rare {
+    animation: none;
+  }
+}
+
+/* Kalp düğmesi animasyonları */
+@keyframes cv-heart-pop {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.45);
+  }
+  60% {
+    transform: scale(0.88);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.cv-heart-pop {
+  animation: cv-heart-pop 0.5s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+@keyframes cv-heart-ring {
+  from {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+}
+
+.cv-heart-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid var(--cv-red);
+  animation: cv-heart-ring 0.6s ease-out forwards;
+  pointer-events: none;
+}
+
+/* Bildirimler */
+@keyframes cv-toast-in {
+  from {
+    transform: translateY(14px) scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.cv-toast {
+  animation: cv-toast-in 0.35s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cv-heart-pop,
+  .cv-heart-ring,
+  .cv-toast {
+    animation: none;
+  }
+}
+
+@keyframes cv-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) rotateX(-12deg) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.cv-pop-in {
+  animation: cv-pop-in 0.55s cubic-bezier(0.3, 1.3, 0.5, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cv-pop-in {
+    animation: none;
+  }
+}
+
+/* Detay posteri: hover’da kaldırma yok, yalnızca eğim */
+.tilt-poster:hover {
+  --lift: 0px;
+}
+
+/* Modal giriş animasyonları */
+@keyframes cv-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes cv-panel-in {
+  from {
+    opacity: 0;
+    transform: perspective(1200px) rotateX(10deg) translateY(30px) scale(0.96);
+  }
+}
+
+.surprise-backdrop {
+  animation: cv-fade-in 0.3s ease both;
+}
+
+.surprise-panel {
+  animation: cv-panel-in 0.5s cubic-bezier(0.3, 1.25, 0.5, 1) both;
+}
+
+@keyframes cv-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(6px);
+  }
+}
+
+.surprise-reveal > * {
+  animation: cv-reveal 0.5s ease both;
+}
+
+.surprise-reveal > *:nth-child(2) {
+  animation-delay: 0.06s;
+}
+
+.surprise-reveal > *:nth-child(3) {
+  animation-delay: 0.12s;
+}
+
+.surprise-reveal > *:nth-child(4) {
+  animation-delay: 0.18s;
+}
+
+.surprise-ambient {
+  animation: cv-fade-in 0.8s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .surprise-backdrop,
+  .surprise-panel,
+  .surprise-reveal > *,
+  .surprise-ambient {
+    animation: none;
+  }
+}
+
+/* Ana sayfa coverflow: merkezdeki posterin renkleri arka plana yayılır */
+.hero-ambient {
+  animation: cv-fade-in 0.9s ease both;
+}
+
+.hero-slide-3d {
+  transform-origin: 50% 50%;
+  transition:
+    transform 0.25s ease-out,
+    filter 0.25s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-ambient {
+    animation: none;
   }
 }

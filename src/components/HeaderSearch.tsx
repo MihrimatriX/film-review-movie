@@ -229,6 +229,26 @@ export function HeaderSearch({
     return () => document.removeEventListener("mousedown", onDoc);
   }, [panelOpen]);
 
+  // “/” kısayolu: yazı alanında değilken masaüstü aramaya odaklan.
+  useEffect(() => {
+    if (compact) return;
+    const onSlash = (e: KeyboardEvent) => {
+      if (e.key !== "/" || e.ctrlKey || e.metaKey || e.altKey) return;
+      const t = e.target as HTMLElement | null;
+      if (
+        t &&
+        (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))
+      )
+        return;
+      const input = inputRef.current;
+      if (!input || input.offsetParent === null) return;
+      e.preventDefault();
+      input.focus();
+    };
+    document.addEventListener("keydown", onSlash);
+    return () => document.removeEventListener("keydown", onSlash);
+  }, [compact]);
+
   useEffect(() => {
     if (!panelOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -374,7 +394,7 @@ export function HeaderSearch({
             </option>
           ))}
         </select>
-        <div className="flex min-w-0 flex-1 gap-2">
+        <div className="relative flex min-w-0 flex-1 gap-2">
           <input
             ref={inputRef}
             id={listId}
@@ -388,8 +408,17 @@ export function HeaderSearch({
               setPanelOpen(true);
             }}
             onFocus={() => setPanelOpen(true)}
-            className="min-w-0 flex-1 rounded border border-[var(--cv-border-strong)] bg-[var(--cv-input)] px-3 py-2 text-sm text-[var(--cv-heading)] placeholder:text-[var(--cv-faint)] focus:border-[var(--cv-accent)]/50 focus:outline-none focus:ring-1 focus:ring-[var(--cv-accent)]/40"
+            aria-keyshortcuts={compact ? undefined : "/"}
+            className="peer min-w-0 flex-1 rounded border border-[var(--cv-border-strong)] bg-[var(--cv-input)] px-3 py-2 text-sm text-[var(--cv-heading)] placeholder:text-[var(--cv-faint)] focus:border-[var(--cv-accent)]/50 focus:outline-none focus:ring-1 focus:ring-[var(--cv-accent)]/40"
           />
+          {!compact && !rawQ ? (
+            <kbd
+              className="pointer-events-none absolute right-[5.5rem] top-1/2 hidden -translate-y-1/2 rounded border border-[var(--cv-border-strong)] bg-[var(--cv-card)] px-1.5 font-mono text-[11px] text-[var(--cv-muted)] peer-focus:hidden md:block"
+              aria-hidden
+            >
+              /
+            </kbd>
+          ) : null}
           <button
             type="submit"
             className="shrink-0 rounded bg-[var(--cv-amber-btn)] px-3 py-2 text-sm font-bold uppercase text-[var(--cv-deep)]"

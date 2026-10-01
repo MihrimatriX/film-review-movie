@@ -8,6 +8,31 @@ async function ensureDataDir() {
   await fs.mkdir(dataDir, { recursive: true });
 }
 
+/**
+ * Önce geçici dosyaya yazıp sonra `rename` eder: süreç yazım ortasında ölse bile
+ * JSON dosyası yarım kalmaz. Aynı dosyaya eşzamanlı yazımlar sıraya alınır.
+ */
+const writeQueues = new Map<string, Promise<void>>();
+
+async function writeJsonAtomic(name: string, data: unknown): Promise<void> {
+  await ensureDataDir();
+  const file = path.join(dataDir, name);
+  const prev = writeQueues.get(file) ?? Promise.resolve();
+  const job = prev
+    .catch(() => undefined)
+    .then(async () => {
+      const tmp = `${file}.${process.pid}.${Date.now()}.tmp`;
+      await fs.writeFile(tmp, JSON.stringify(data, null, 2), "utf-8");
+      await fs.rename(tmp, file);
+    });
+  writeQueues.set(file, job);
+  try {
+    await job;
+  } finally {
+    if (writeQueues.get(file) === job) writeQueues.delete(file);
+  }
+}
+
 export async function readMovies(): Promise<Movie[]> {
   const file = path.join(dataDir, "movies.json");
   try {
@@ -19,9 +44,7 @@ export async function readMovies(): Promise<Movie[]> {
 }
 
 export async function writeMovies(movies: Movie[]): Promise<void> {
-  await ensureDataDir();
-  const file = path.join(dataDir, "movies.json");
-  await fs.writeFile(file, JSON.stringify(movies, null, 2), "utf-8");
+  await writeJsonAtomic("movies.json", movies);
 }
 
 export async function readPosts(): Promise<BlogPost[]> {
@@ -35,9 +58,7 @@ export async function readPosts(): Promise<BlogPost[]> {
 }
 
 export async function writePosts(posts: BlogPost[]): Promise<void> {
-  await ensureDataDir();
-  const file = path.join(dataDir, "posts.json");
-  await fs.writeFile(file, JSON.stringify(posts, null, 2), "utf-8");
+  await writeJsonAtomic("posts.json", posts);
 }
 
 export async function readCelebrities(): Promise<Celebrity[]> {
@@ -51,9 +72,7 @@ export async function readCelebrities(): Promise<Celebrity[]> {
 }
 
 export async function writeCelebrities(list: Celebrity[]): Promise<void> {
-  await ensureDataDir();
-  const file = path.join(dataDir, "celebrities.json");
-  await fs.writeFile(file, JSON.stringify(list, null, 2), "utf-8");
+  await writeJsonAtomic("celebrities.json", list);
 }
 
 export async function readSeriesList(): Promise<Series[]> {
@@ -67,9 +86,7 @@ export async function readSeriesList(): Promise<Series[]> {
 }
 
 export async function writeSeriesList(list: Series[]): Promise<void> {
-  await ensureDataDir();
-  const file = path.join(dataDir, "series.json");
-  await fs.writeFile(file, JSON.stringify(list, null, 2), "utf-8");
+  await writeJsonAtomic("series.json", list);
 }
 
 export async function readUserData(): Promise<UserData> {
@@ -95,7 +112,5 @@ export async function readUserData(): Promise<UserData> {
 }
 
 export async function writeUserData(data: UserData): Promise<void> {
-  await ensureDataDir();
-  const file = path.join(dataDir, "user.json");
-  await fs.writeFile(file, JSON.stringify(data, null, 2), "utf-8");
+  await writeJsonAtomic("user.json", data);
 }

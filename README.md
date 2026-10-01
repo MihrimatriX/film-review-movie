@@ -16,6 +16,23 @@ Proje; yerel JSON verileri, cok dilli arayuz (TR/EN), blog ve temel bir admin pa
 - `tr` / `en` dil destegi (cookie tabanli)
 - Docker ile calistirma destegi
 
+### Etkilesimli deneyim
+
+- **3D poster kartlari:** imleci takip eden egim, isik yansimasi ve derinlikte yuzen rozetler;
+  karttaki ↻ dugmesiyle kart 180° donup arka yuzde yonetmen, sure, ozet ve “Detaya git” gosterir
+  (dokunmatik cihazlarda da calisir).
+- **Holografik “Efsane” kartlar:** puani 8 ve uzeri olan yapimlarda imlece tepki veren gokkusagi folyo.
+- **3D coverflow ana sayfa slider’i:** kartlar merkeze uzakliklarina gore doner; ortadaki posterin
+  renkleri arka plana yayilir.
+- **Bana surpriz yap (🎲):** baslikta zar dugmesi; 3D kart yavaslayarak doner ve rastgele bir filmde durur.
+- **Izleme listesi (♥) ve kisisel puan:** kartlardan/detay sayfalarindan listeye ekleme, 10 yildizli
+  puanlama; `/watchlist` sayfasinda film/dizi filtresiyle listelenir. Veriler tarayicida
+  (`localStorage`) saklanir, sekmeler arasi senkron calisir.
+- **Detay sayfalari:** site ici fragman oynatici (YouTube nocookie), paylas dugmesi (Web Share / panoya kopyala),
+  tur benzerligine gore “Benzer filmler/diziler”, 3D egimli poster.
+- Okuma ilerleme cubugu, “basa don” dugmesi, aramaya odaklanmak icin `/` kisayolu.
+- Tum animasyonlar `prefers-reduced-motion` tercihine uyar.
+
 ## Teknoloji Yigini
 
 - `Next.js 16` (App Router)
@@ -27,6 +44,7 @@ Proje; yerel JSON verileri, cok dilli arayuz (TR/EN), blog ve temel bir admin pa
 ## Ekranlar ve Moduller
 
 - Site: `/`
+- Izleme listem: `/watchlist`
 - Filmler: `/movies`
 - Diziler: `/series`
 - Unluler: `/celebrities`
@@ -58,6 +76,9 @@ TMDB_API_KEY=your_tmdb_api_key
 
 # admin panel sifresi (tanimlanmazsa varsayilan: admin123)
 ADMIN_PASSWORD=your_strong_password
+
+# opsiyonel - admin oturum cerezini imzalayan sir (tanimlanmazsa sifreden turetilir)
+ADMIN_SESSION_SECRET=long_random_string
 
 # opsiyonel - canonical URL/SEO
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
@@ -125,8 +146,10 @@ Admin islemleri bu dosyalari gunceller. Docker kullaniyorsaniz `./data` volume o
 ## Admin Kimlik Dogrulama
 
 - Giris endpoint'i: `POST /api/admin/login`
-- Basarili giriste `admin_session` cookie olusturulur
-- `proxy` ile `/admin/*` ve `/api/admin/*` rotalari korunur
+- Basarili giriste `admin_session` cookie'si olusturulur; deger HMAC-SHA256 ile imzali ve
+  sureli bir jetondur (elle yazilan/degistirilen cerezler reddedilir)
+- Sifre karsilastirmasi sabit zamanlidir; IP basina 10 dakikada 8 hatali denemeden sonra `429` doner
+- `proxy` ile `/admin/*` ve `/api/admin/*` rotalari korunur; `ADMIN_PASSWORD` degisince eski oturumlar gecersiz olur
 
 Guvenlik notu:
 

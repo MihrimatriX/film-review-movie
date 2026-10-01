@@ -186,10 +186,7 @@ export type SeriesTmdbExtras = {
   status: string | null;
 };
 
-function movieFromTmdbDetails(
-  details: TmdbMovieDetails,
-  locale: Locale,
-): Movie {
+function movieFromTmdbDetails(details: TmdbMovieDetails): Movie {
   const directors = crewNamesByJobs(details.credits?.crew, [
     "Director",
     "Co-Director",
@@ -468,7 +465,7 @@ export async function getMovieBySlugMerged(
 
   const details = await tmdbMovieDetails(locale, parsed.id);
   if (!details) return null;
-  return movieFromTmdbDetails(details, locale);
+  return movieFromTmdbDetails(details);
 }
 
 export async function getMoviePageBundle(
@@ -486,7 +483,7 @@ export async function getMoviePageBundle(
   if (!details) return null;
 
   return {
-    movie: movieFromTmdbDetails(details, locale),
+    movie: movieFromTmdbDetails(details),
     tmdb: buildMovieTmdbExtras(details, locale),
   };
 }

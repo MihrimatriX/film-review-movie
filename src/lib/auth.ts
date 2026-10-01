@@ -1,15 +1,15 @@
 import { cookies } from "next/headers";
+import {
+  SESSION_COOKIE,
+  getAdminPassword,
+  verifySessionToken,
+} from "@/lib/session-token";
 
-const COOKIE = "admin_session";
-const COOKIE_VALUE = "ok";
-
-export function getAdminPassword(): string {
-  return process.env.ADMIN_PASSWORD ?? "admin123";
-}
+const COOKIE = SESSION_COOKIE;
 
 export async function isAdminSession(): Promise<boolean> {
   const jar = await cookies();
-  return jar.get(COOKIE)?.value === COOKIE_VALUE;
+  return verifySessionToken(jar.get(COOKIE)?.value);
 }
 
-export { COOKIE, COOKIE_VALUE };
+export { COOKIE, getAdminPassword };
