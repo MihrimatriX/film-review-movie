@@ -1,11 +1,15 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { SESSION_COOKIE, verifySessionToken } from "@/lib/session-token";
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const authed = await verifySessionToken(
+    request.cookies.get(SESSION_COOKIE)?.value,
+  );
 
   if (pathname.startsWith("/admin/login")) {
-    if (request.cookies.get("admin_session")?.value === "ok") {
+    if (authed) {
       return NextResponse.redirect(new URL("/admin", request.url));
     }
     return NextResponse.next();
@@ -16,7 +20,7 @@ export function proxy(request: NextRequest) {
   }
 
   if (pathname.startsWith("/admin")) {
-    if (request.cookies.get("admin_session")?.value !== "ok") {
+    if (!authed) {
       const url = request.nextUrl.clone();
       url.pathname = "/admin/login";
       url.searchParams.set("next", pathname);
@@ -25,7 +29,7 @@ export function proxy(request: NextRequest) {
   }
 
   if (pathname.startsWith("/api/admin")) {
-    if (request.cookies.get("admin_session")?.value !== "ok") {
+    if (!authed) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
   }

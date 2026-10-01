@@ -1,4 +1,9 @@
 import { JsonLd } from "@/components/JsonLd";
+import { ShareButton } from "@/components/detail/ShareButton";
+import { TiltPoster } from "@/components/detail/TiltPoster";
+import { TrailerButton } from "@/components/detail/TrailerButton";
+import { MyRating } from "@/components/library/MyRating";
+import { WatchlistButton } from "@/components/library/WatchlistButton";
 import { PageHero } from "@/components/PageHero";
 import { SeriesCastMemberCard } from "@/components/SeriesCastMemberCard";
 import { SeriesRelatedCard } from "@/components/SeriesRelatedCard";
@@ -61,12 +66,35 @@ export default async function SeriesSinglePage({ params }: Props) {
   const isEn = locale === "en";
   const dict = t(locale);
   const d = dict.tmdbDetail;
-  const bundle = await getSeriesPageBundle(locale, slug);
+  const ui = dict.ui;
+  const [bundle, list] = await Promise.all([
+    getSeriesPageBundle(locale, slug),
+    getSeriesMerged(locale),
+  ]);
   if (!bundle) notFound();
   const { series: s, tmdb } = bundle;
 
-  const list = await getSeriesMerged(locale);
-  const related = list.filter((x) => x.slug !== slug).slice(0, 3);
+  // Ortak türü en çok olanlar önce; eşitlikte puan.
+  const genreSet = new Set(s.genres.map((g) => g.toLowerCase()));
+  const related = list
+    .filter((x) => x.slug !== slug && x.title !== s.title)
+    .map((x) => ({
+      x,
+      overlap: x.genres.filter((g) => genreSet.has(g.toLowerCase())).length,
+    }))
+    .sort((a, b) => b.overlap - a.overlap || b.x.rating - a.x.rating)
+    .slice(0, 6)
+    .map(({ x }) => x);
+
+  const libraryItem = {
+    kind: "series" as const,
+    slug: s.slug,
+    title: s.title,
+    poster: s.poster,
+    year: s.yearLabel,
+    rating: s.rating,
+    genres: s.genres,
+  };
 
   const castNav =
     tmdb || s.cast?.length
@@ -127,41 +155,16 @@ export default async function SeriesSinglePage({ params }: Props) {
       <div className="mx-auto max-w-6xl px-4 py-8 md:px-6">
         <div className="flex flex-col gap-10 lg:flex-row">
           <div className="w-full max-w-sm shrink-0">
-            <div className="relative aspect-[2/3] overflow-hidden rounded-md border border-[var(--cv-border)] shadow-xl">
-              <Image
-                src={s.poster}
-                alt={s.title}
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
-            <div className="mt-4 flex flex-col gap-2">
-              {tmdb?.trailerYoutubeKey ? (
-                <a
-                  href={`https://www.youtube.com/watch?v=${tmdb.trailerYoutubeKey}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded bg-[var(--cv-red)] py-3 text-center text-sm font-bold uppercase text-[var(--cv-on-red)] hover:opacity-95"
-                >
-                  {isEn ? "▶ Watch trailer" : "▶ Fragmanı izle"}
-                </a>
-              ) : (
-                <button
-                  type="button"
-                  className="rounded bg-[var(--cv-red)] py-3 text-center text-sm font-bold uppercase text-[var(--cv-on-red)] opacity-80"
-                  disabled
-                >
-                  {isEn ? "▶ Watch trailer" : "▶ Fragmanı izle"}
-                </button>
-              )}
-              <button
-                type="button"
-                className="rounded bg-[var(--cv-amber-btn)] py-3 text-center text-sm font-bold uppercase text-[var(--cv-on-amber)]"
-              >
-                {isEn ? "Buy ticket" : "Bilet al"}
-              </button>
-            </div>
+            <TiltPoster src={s.poster} alt={s.title} rating={s.rating} />
+            {tmdb?.trailerYoutubeKey ? (
+              <div className="mt-4 flex justify-center lg:justify-start">
+                <TrailerButton
+                  youtubeKey={tmdb.trailerYoutubeKey}
+                  title={s.title}
+                  label={ui.playTrailer}
+                />
+              </div>
+            ) : null}
           </div>
           <div className="min-w-0 flex-1">
             <h1 className="font-[family-name:var(--font-dosis)] text-3xl font-bold text-[var(--cv-heading)] md:text-4xl">
@@ -170,15 +173,11 @@ export default async function SeriesSinglePage({ params }: Props) {
                 {s.yearLabel}
               </span>
             </h1>
-            <div className="mt-4 flex flex-wrap gap-2 text-sm text-[var(--cv-muted)]">
-              <span className="rounded border border-[var(--cv-border-strong)] px-3 py-1">
-                {isEn ? "♥ Add to favorites" : "♥ Favorilere ekle"}
-              </span>
-              <span className="rounded border border-[var(--cv-border-strong)] px-3 py-1">
-                {isEn ? "↗ Share" : "↗ Paylaş"}
-              </span>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <WatchlistButton item={libraryItem} variant="full" />
+              <ShareButton title={s.title} />
             </div>
-            <div className="mt-6 flex flex-wrap gap-8 border-b border-[var(--cv-border)] pb-6">
+            <div className="mt-6 flex flex-wrap items-start gap-8 border-b border-[var(--cv-border)] pb-6">
               <div className="text-[var(--cv-accent)]">
                 ★{" "}
                 <span className="text-3xl text-[var(--cv-heading)]">
@@ -189,11 +188,8 @@ export default async function SeriesSinglePage({ params }: Props) {
                   {s.reviewCount} {isEn ? "reviews" : "yorum"}
                 </p>
               </div>
-              <div>
-                <p className="text-xs uppercase text-[var(--cv-muted)]">
-                  {isEn ? "Rate this" : "Puan ver"}
-                </p>
-                <p className="text-[var(--cv-star)]">★★★★★★★★☆</p>
+              <div className="min-w-0 max-w-md flex-1">
+                <MyRating item={libraryItem} />
               </div>
             </div>
 

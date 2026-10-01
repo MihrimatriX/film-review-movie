@@ -107,7 +107,6 @@ export function PageHeroMotion({
           {crumbs.map((cr, i) => {
             const isFirst = i === 0;
             const showHome = isFirst && cr.href === "/";
-            const isCurrent = !cr.href;
 
             return (
               <li

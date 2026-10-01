@@ -8,7 +8,12 @@ import { useState } from "react";
 export function AdminLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const next = searchParams.get("next") || "/admin";
+  const rawNext = searchParams.get("next") || "";
+  // Yalnızca site içi admin yollarına dön (açık yönlendirmeyi engelle).
+  const next =
+    rawNext.startsWith("/admin") && !rawNext.startsWith("//")
+      ? rawNext
+      : "/admin";
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -25,7 +30,11 @@ export function AdminLoginForm() {
         body: JSON.stringify({ password }),
       });
       if (!res.ok) {
-        setError("Geçersiz şifre");
+        setError(
+          res.status === 429
+            ? "Çok fazla deneme — birkaç dakika sonra tekrar deneyin"
+            : "Geçersiz şifre",
+        );
         return;
       }
       router.push(next);

@@ -6,7 +6,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Image from "next/image";
 import Link from "next/link";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const TAG_PALETTE = [
   "bg-sky-600/90",
@@ -32,6 +32,59 @@ export function HeroSlider({
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const headlineRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+
+  /**
+   * 3D coverflow: her kart, kaydırma alanının merkezine uzaklığına göre Y ekseninde
+   * döner ve derinliğe itilir; merkezdeki kartın posteri arka planı boyar.
+   */
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const tr = track.getBoundingClientRect();
+      const center = tr.left + tr.width / 2;
+      const half = tr.width / 2 || 1;
+      let best = 0;
+      let bestDist = Number.POSITIVE_INFINITY;
+      track.querySelectorAll<HTMLElement>(".hero-slide-3d").forEach((el, i) => {
+        const card = el.parentElement;
+        if (!card) return;
+        const r = card.getBoundingClientRect();
+        const d = (r.left + r.width / 2 - center) / half;
+        const abs = Math.abs(d);
+        if (abs < bestDist) {
+          bestDist = abs;
+          best = i;
+        }
+        if (reduced) return;
+        const c = Math.max(-1.3, Math.min(1.3, d));
+        el.style.transform = `perspective(1100px) rotateY(${(-c * 26).toFixed(2)}deg) translateZ(${(-Math.abs(c) * 70).toFixed(1)}px)`;
+        el.style.filter = `brightness(${(1 - Math.min(abs, 1.2) * 0.32).toFixed(3)}) saturate(${(1 - Math.min(abs, 1) * 0.25).toFixed(3)})`;
+      });
+      setActive(best);
+    };
+
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    track.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    return () => {
+      cancelAnimationFrame(frame);
+      track.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
+  }, [slides.length]);
+
+  const ambient = slides[active] ?? slides[0];
 
   useGSAP(
     () => {
@@ -101,8 +154,21 @@ export function HeroSlider({
   return (
     <section
       ref={sectionRef}
-      className="relative border-b border-[var(--cv-border)] bg-[var(--cv-mid)] py-8"
+      className="relative isolate overflow-hidden border-b border-[var(--cv-border)] bg-[var(--cv-mid)] py-8"
     >
+      {ambient ? (
+        <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden>
+          <Image
+            key={ambient.key}
+            src={ambient.src}
+            alt=""
+            fill
+            sizes="240px"
+            className="hero-ambient scale-125 object-cover opacity-30 blur-3xl saturate-150"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[color-mix(in_srgb,var(--cv-mid)_40%,transparent)] via-transparent to-[var(--cv-mid)]" />
+        </div>
+      ) : null}
       <div className="mx-auto max-w-6xl px-4 md:px-6">
         <div
           ref={headlineRef}
@@ -116,7 +182,10 @@ export function HeroSlider({
             {trending}
           </p>
         </div>
-        <DragScroll ref={trackRef} className="flex gap-4 overflow-x-auto pb-4">
+        <DragScroll
+          ref={trackRef}
+          className="flex gap-4 overflow-x-auto px-1 pb-4 pt-2"
+        >
           {slides.length === 0 && (
             <p className="py-6 text-sm text-[var(--cv-muted)]">{sliderEmpty}</p>
           )}
@@ -125,34 +194,44 @@ export function HeroSlider({
               key={s.key}
               className="hero-slide-card relative w-[200px] shrink-0 md:w-[240px]"
             >
-              <div className="hero-slide-elevate relative aspect-[285/437] overflow-hidden rounded-md will-change-transform">
-                <Image
-                  src={s.src}
-                  alt={s.title}
-                  fill
-                  className="object-cover"
-                  sizes="240px"
-                  priority={i < 5}
-                />
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[var(--cv-hero-scrim-from)] to-transparent p-3 pt-16">
-                  <span
-                    className={`inline-block rounded px-2 py-0.5 text-[10px] font-bold uppercase text-white ${TAG_PALETTE[i % TAG_PALETTE.length]}`}
-                  >
-                    {s.tag}
-                  </span>
-                  <h2 className="mt-2 font-[family-name:var(--font-dosis)] text-lg font-bold text-[var(--cv-heading)]">
-                    <Link
-                      href={s.href}
-                      className="hover:text-[var(--cv-accent)]"
+              <div className="hero-slide-3d will-change-transform">
+                <div
+                  className={`hero-slide-elevate relative aspect-[285/437] overflow-hidden rounded-md will-change-transform transition-shadow duration-500 ${
+                    i === active
+                      ? "shadow-[0_24px_60px_-18px_rgba(0,0,0,0.85),0_0_0_1px_color-mix(in_srgb,var(--cv-accent)_45%,transparent)]"
+                      : "shadow-[0_14px_30px_-16px_rgba(0,0,0,0.7)]"
+                  }`}
+                >
+                  <Image
+                    src={s.src}
+                    alt={s.title}
+                    fill
+                    className="object-cover"
+                    sizes="240px"
+                    priority={i < 5}
+                  />
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[var(--cv-hero-scrim-from)] to-transparent p-3 pt-16">
+                    <span
+                      className={`inline-block rounded px-2 py-0.5 text-[10px] font-bold uppercase text-white ${TAG_PALETTE[i % TAG_PALETTE.length]}`}
                     >
-                      {s.title}
-                    </Link>
-                  </h2>
-                  <p className="text-xs text-[var(--cv-accent)]">
-                    ★{" "}
-                    <span className="text-[var(--cv-heading)]">{s.rating}</span>
-                    <span className="text-[var(--cv-muted)]"> /10</span>
-                  </p>
+                      {s.tag}
+                    </span>
+                    <h2 className="mt-2 font-[family-name:var(--font-dosis)] text-lg font-bold text-[var(--cv-heading)]">
+                      <Link
+                        href={s.href}
+                        className="hover:text-[var(--cv-accent)]"
+                      >
+                        {s.title}
+                      </Link>
+                    </h2>
+                    <p className="text-xs text-[var(--cv-accent)]">
+                      ★{" "}
+                      <span className="text-[var(--cv-heading)]">
+                        {s.rating}
+                      </span>
+                      <span className="text-[var(--cv-muted)]"> /10</span>
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

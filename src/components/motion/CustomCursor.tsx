@@ -14,6 +14,7 @@ const INTERACTIVE_SEL = [
   ".hero-slide-card",
   ".in-theater-card",
   ".cv-card-hover",
+  ".card3d",
   "[data-cursor-hover]",
 ].join(",");
 

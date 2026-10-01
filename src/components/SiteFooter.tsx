@@ -32,6 +32,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
         { label: s.footer.linkProfile, href: "/community/profile" },
         { label: s.footer.linkFavorites, href: "/community/favorites" },
         { label: s.footer.linkRated, href: "/community/rated" },
+        { label: s.ui.watchlist, href: "/watchlist" },
         { label: s.footer.linkAdmin, href: "/admin" },
       ],
     },
