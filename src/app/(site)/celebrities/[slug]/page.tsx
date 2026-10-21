@@ -1,0 +1,132 @@
+import { CelebrityPortraitImage } from "@/components/CelebrityPortraitImage";
+import { JsonLd } from "@/components/JsonLd";
+import { PageHero } from "@/components/PageHero";
+import { pickCelebrityImageSrc } from "@/lib/celebrity-image";
+import {
+  getCelebritiesMerged,
+  getCelebrityBySlugMerged,
+  staticSlugParams,
+} from "@/lib/catalog";
+import { t } from "@/lib/i18n";
+import { getLocale } from "@/lib/i18n-server";
+import { notFoundMetadata, splitPersonName } from "@/lib/seo/helpers";
+import {
+  breadcrumbNode,
+  personNode,
+  webPageNode,
+} from "@/lib/seo/json-ld";
+import { buildDetailMetadata } from "@/lib/seo/metadata";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+
+export const generateStaticParams = () =>
+  staticSlugParams(getCelebritiesMerged);
+
+type Props = { params: Promise<{ slug: string }> };
+
+export async function generateMetadata({ params }: Props) {
+  const { slug } = await params;
+  const locale = await getLocale();
+  const c = await getCelebrityBySlugMerged(locale, slug);
+  if (!c) return notFoundMetadata(locale);
+  const desc =
+    c.bio?.slice(0, 400) ||
+    [c.role, c.country].filter(Boolean).join(" · ") ||
+    c.name;
+  const names = splitPersonName(c.name);
+  return buildDetailMetadata({
+    locale,
+    title: c.name,
+    description: desc,
+    pathname: `/celebrities/${slug}`,
+    image: c.imageGrid2 ?? c.image ?? null,
+    imageAlt: c.name,
+    type: "profile",
+    firstName: names.firstName,
+    lastName: names.lastName,
+    gender: c.gender === 1 ? "female" : c.gender === 2 ? "male" : undefined,
+    keywords: [c.role, c.country].filter((v): v is string => Boolean(v)),
+  });
+}
+
+export default async function CelebritySinglePage({ params }: Props) {
+  const { slug } = await params;
+  const locale = await getLocale();
+  const dict = t(locale);
+  const c = await getCelebrityBySlugMerged(locale, slug);
+  if (!c) notFound();
+
+  const crumbHome = locale === "en" ? "Home" : dict.crumbs.home;
+  const crumbCelebs = dict.celebritiesPage.crumb;
+  const backLabel = locale === "en" ? "← All celebrities" : "← Tüm ünlüler";
+
+  return (
+    <>
+      <JsonLd
+        data={[
+          webPageNode({
+            pathname: `/celebrities/${slug}`,
+            title: c.name,
+            description: c.bio,
+            locale,
+            image: c.imageGrid2 ?? c.image,
+          }),
+          breadcrumbNode([
+            { name: crumbHome, pathname: "/" },
+            { name: crumbCelebs, pathname: "/celebrities" },
+            { name: c.name },
+          ]),
+          personNode(c, `/celebrities/${slug}`),
+        ]}
+      />
+      <PageHero
+        title={c.name}
+        crumbs={[
+          { label: crumbHome, href: "/" },
+          { label: crumbCelebs, href: "/celebrities" },
+          { label: c.name },
+        ]}
+      />
+      <div className="mx-auto max-w-6xl px-4 py-10 md:px-6">
+        <div className="flex flex-col gap-10 lg:flex-row">
+          <div className="relative mx-auto aspect-[3/4] w-full max-w-xs shrink-0 overflow-hidden rounded-lg border border-[var(--cv-border)] lg:mx-0">
+            <CelebrityPortraitImage
+              initialSrc={pickCelebrityImageSrc(c, "detail")}
+              alt={c.name}
+              fill
+              sizes="(max-width:1024px) 100vw, 400px"
+              className="object-cover"
+              priority
+            />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm uppercase text-[var(--cv-accent)]">
+              {c.role?.trim() ? c.role : "—"}
+              {c.country ? ` · ${c.country}` : ""}
+            </p>
+            <h1 className="mt-2 font-[family-name:var(--font-dosis)] text-4xl font-bold text-[var(--cv-heading)]">
+              {c.name}
+            </h1>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <span className="rounded border border-[var(--cv-border-strong)] px-3 py-1 text-sm text-[var(--cv-muted)]">
+                ♥ Add to favorites
+              </span>
+              <span className="rounded border border-[var(--cv-border-strong)] px-3 py-1 text-sm text-[var(--cv-muted)]">
+                ↗ Share
+              </span>
+            </div>
+            <p className="mt-8 leading-relaxed text-[var(--cv-body)]">
+              {c.bio?.trim() ? c.bio : dict.celebritiesPage.bioPlaceholder}
+            </p>
+            <Link
+              href="/celebrities"
+              className="mt-8 inline-block text-[var(--cv-accent)] hover:underline"
+            >
+              {backLabel}
+            </Link>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}

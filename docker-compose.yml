@@ -1,0 +1,16 @@
+services:
+  web:
+    container_name: afu-movie-review
+    build: .
+    ports:
+      - "31784:3000"
+    environment:
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-changeme}
+    volumes:
+      - ./data:/app/data
+    networks:
+      - proxy-network
+
+networks:
+  proxy-network:
+    external: true
